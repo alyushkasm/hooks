@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer, useRef, useMemo } from 'react';
 import List from './List';
 import axios from 'axios';
+import { useFormInput } from '../hooks/forms';
 
 const todo = props => {
     const [inputIsValid, setInputIsValid] = useState(false);
@@ -39,6 +40,7 @@ const todo = props => {
     // }, [submittedTodo]);
 
     const todoInputRef = useRef();
+    const todoInput = useFormInput();
 
     const todoListReducer = (state, action) => {
         switch(action.type) {
@@ -85,11 +87,11 @@ const todo = props => {
         <input 
             type="text" 
             placeholder="Todo" 
-            ref={todoInputRef} 
-            onChange={inputValidationHandler}
+            onChange={todoInput.onChange}
+            value={todoInput.value}
             style={{backgroundColor: inputIsValid ? 'transparent' : 'red'}} />
         <button type="button" onClick={todoAddHandler}>Add</button>
-        <List items={todoList} onClick={todoRemoveHandler}/>
+        {useMemo(() => <List items={todoList} onClick={todoRemoveHandler}/>, [todoList])}
     </React.Fragment>
 };
 
